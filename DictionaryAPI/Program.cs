@@ -1,4 +1,6 @@
 using DictionaryAPI.Context;
+using DictionaryAPI.Middlewares;
+using DictionaryAPI.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,8 +16,9 @@ builder.Services.AddDbContext<DictionaryDB>
         opt => opt.UseSqlServer(builder.Configuration["ConnectionStrings:DictionaryDB"]), 
         ServiceLifetime.Singleton
     );
+builder.Services.AddSingleton<ILoggerService, ConsoleLogger>();
 var app = builder.Build();
-
+app.UseHttpInfoMiddleware();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
