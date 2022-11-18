@@ -44,11 +44,9 @@ POST /Word
 ````
 ````json
 {
-    "Id" : 1,
     "Name": "...",
     "Definitions": [
         {
-            "Id":1,
             "Definition": "...",
             "DefinitionType":"...",
             "ExampleSentence": "..."
@@ -66,11 +64,9 @@ Location: {{host}}/Breakfasts/{{id}}
 ````
 `````json
 {
-    "Id" : 1,
     "Name": "...",
     "Definitions": [
         {
-            "Id":1,
             "Definition": "...",
             "DefinitionType":"...",
             "ExampleSentence": "..."

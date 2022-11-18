@@ -29,4 +29,10 @@
     <ProjectReference Include="..\DictionaryAPI.Tests\DictionaryAPI.Tests.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Operations\Delete\" />
+    <Folder Include="Operations\Get\" />
+    <Folder Include="Operations\Update\" />
+  </ItemGroup>
+
 </Project>
