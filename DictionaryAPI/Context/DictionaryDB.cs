@@ -9,10 +9,10 @@ namespace DictionaryAPI.Context
 
         public DbSet<Word> Words { get; set; }
 
-
+        public DbSet<Definition> Definitions {get; set;}
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder); 
+            modelBuilder.Entity<Word>().HasMany(w => w.Definitions).WithOne(d => d.Word); // One to many relation between Word and Definition
         }
     }
 }

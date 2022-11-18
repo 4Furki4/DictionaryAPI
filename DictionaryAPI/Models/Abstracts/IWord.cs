@@ -1,4 +1,6 @@
-﻿namespace DictionaryAPI.Models.Abstracts
+﻿using DictionaryAPI.Models.Concretes;
+
+namespace DictionaryAPI.Models.Abstracts
 {
     public interface IWord
     {
@@ -6,5 +8,6 @@
 
         public string Name { get; set; }
 
+        public List<Definition> Definitions {get; set;}
     }
 }
