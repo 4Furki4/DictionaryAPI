@@ -1,4 +1,6 @@
 ﻿using DictionaryAPI.Context;
+using DictionaryAPI.Context.DictionaryRepository;
+using DictionaryAPI.Models.Abstracts;
 using DictionaryAPI.Models.Concretes;
 using DictionaryAPI.Models.ViewModels;
 
@@ -16,19 +18,7 @@ namespace DictionaryAPI.Operations.Create
 
         public Word CreateNewWord(WordViewModel _word)
         {
-            Word word = new Word();
-            word.Name = _word.Name;
-            foreach (DefinitionViewModel definition in _word.Definitions)
-            {
-                word.Definitions.Add(
-                    new Definition
-                    {
-                        WordDefinition = definition.Definition,
-                        DefinitionType = definition.DefinitionType,
-                        ExampleSentence = definition.ExampleSentence
-                    }
-                );
-            }
+            Word word = _word.ConvertVmToWord(new Word());
             return word;
         }
 
@@ -37,5 +27,6 @@ namespace DictionaryAPI.Operations.Create
             await context.Words.AddAsync(word);
             await context.SaveChangesAsync();
         }
+
     }
 }

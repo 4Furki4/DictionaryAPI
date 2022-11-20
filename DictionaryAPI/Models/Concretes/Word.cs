@@ -6,6 +6,6 @@ namespace DictionaryAPI.Models.Concretes
     {
         public long Id { get; set; }
         public string Name { get; set; } = string.Empty;
-        public List<Definition> Definitions { get; set;} = new List<Definition>();
+        public virtual List<Definition> Definitions { get; set;} = new List<Definition>();
     }
 }

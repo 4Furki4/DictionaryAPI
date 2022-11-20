@@ -1,4 +1,6 @@
 using DictionaryAPI.Context;
+using DictionaryAPI.Context.DictionaryRepository;
+using DictionaryAPI.Context.DictionaryStore;
 using DictionaryAPI.Middlewares;
 using DictionaryAPI.Services;
 using Microsoft.EntityFrameworkCore;

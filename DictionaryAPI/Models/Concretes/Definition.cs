@@ -6,7 +6,7 @@ namespace DictionaryAPI.Models.Concretes
     {
         public long Id { get; set; }
         public long WordId { get; set; }
-        public Word Word { get; set; } = new();
+        public virtual Word Word { get; set; } = new();
         public string WordDefinition { get; set; } = string.Empty;
         public string DefinitionType { get; set; } = string.Empty;
         public string ExampleSentence { get; set; } = string.Empty;

@@ -1,9 +1,12 @@
 ﻿using DictionaryAPI.Context;
+using DictionaryAPI.Context.DictionaryRepository;
 using DictionaryAPI.Models.Concretes;
 using DictionaryAPI.Models.ViewModels;
 using DictionaryAPI.Operations.Create;
 using DictionaryAPI.Operations.Get;
+using DictionaryAPI.Operations.Update;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DictionaryAPI.Controllers
 {
@@ -19,15 +22,25 @@ namespace DictionaryAPI.Controllers
         }
 
         [HttpGet("Word/{id:long}")]
-        public async Task<IActionResult> GetWord(long id)
+        public async Task<IActionResult> GetWordById(long id)
         {
-            var command = new GetWordQuery(context);
+            var command = new GetWordByIdQuery(context);
             
             WordViewModel viewModel = await command.GetWordById(id);
             
             return Ok(viewModel);
         }
 
+        [HttpGet("Word/{wordName}")]
+
+        public async Task<IActionResult> GetWordByName(string wordName)
+        {
+            var command = new GetWordByNameQuery(context);
+
+            WordViewModel viewModel = await command.GetWordByName(wordName);
+
+            return Ok(viewModel);
+        }
 
         [HttpPost]
         public async Task<IActionResult> CreateWord([FromBody] WordViewModel _word)
@@ -37,15 +50,17 @@ namespace DictionaryAPI.Controllers
             await command.SaveNewWord(word);
             
             return CreatedAtAction(
-                actionName: nameof(GetWord),
+                actionName: nameof(GetWordById),
                 routeValues: new { id = word.Id },
                 _word
                 );
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateWord()
+        [HttpPut("Word/Update/{wordName}")]
+        public async Task<IActionResult> UpdateWord([FromBody] WordViewModel _word, string wordName)
         {
+            IUpdateWordCommand command = new UpdateWordCommand(context);
+            await command.Update(_word, wordName);
             return Ok();
         }
 

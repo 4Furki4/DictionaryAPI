@@ -7,9 +7,9 @@ namespace DictionaryAPI.Context
     {
         public DictionaryDB(DbContextOptions<DictionaryDB> options) : base(options) { }
 
-        public DbSet<Word> Words { get; set; }
+        public virtual DbSet<Word> Words => Set<Word>();
 
-        public DbSet<Definition> Definitions {get; set;}
+        public virtual DbSet<Definition> Definitions => Set<Definition>();
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Word>().HasMany(w => w.Definitions).WithOne(d => d.Word); // One to many relation between Word and Definition
