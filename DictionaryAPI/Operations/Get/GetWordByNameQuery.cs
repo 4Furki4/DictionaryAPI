@@ -17,7 +17,10 @@ namespace DictionaryAPI.Operations.Get
         {
             wordName= wordName.Trim();
             var word = await context.Words.Include(w => w.Definitions).FirstOrDefaultAsync(w => w.Name == wordName);
-            return word.MakeWordAsVM();        
+            if (word != null)
+                return word.MakeWordAsVM();
+            else
+                return new WordViewModel();
         }
     }
 }

@@ -27,7 +27,6 @@
 
   <ItemGroup>
     <Folder Include="Operations\Delete\" />
-    <Folder Include="Operations\Update\" />
   </ItemGroup>
 
 </Project>
