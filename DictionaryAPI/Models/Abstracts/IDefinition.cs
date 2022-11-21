@@ -9,6 +9,6 @@ namespace DictionaryAPI.Models.Abstracts
         public long WordId { get; set; }
         public string WordDefinition { get; set; }
         public string DefinitionType { get; set; }
-        public string ExampleSentence { get; set; }
+        public string? ExampleSentence { get; set; }
     }
 }

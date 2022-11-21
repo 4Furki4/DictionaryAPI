@@ -1,13 +1,12 @@
 using DictionaryAPI.Context;
-using DictionaryAPI.Context.DictionaryRepository;
-using DictionaryAPI.Context.DictionaryStore;
 using DictionaryAPI.Middlewares;
 using DictionaryAPI.Services;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
-
+ValidatorOptions.Global.LanguageManager.Enabled = false;
 // Add services to the container.
 
 builder.Services.AddControllers().AddJsonOptions(opt => opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);

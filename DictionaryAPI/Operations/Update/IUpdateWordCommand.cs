@@ -5,6 +5,6 @@ namespace DictionaryAPI.Operations.Update
 {
     public interface IUpdateWordCommand
     {
-        public Task Update(WordViewModel _word, string wordName);
+        public Task<bool> Update(WordViewModel _word, string wordName);
     }
 }

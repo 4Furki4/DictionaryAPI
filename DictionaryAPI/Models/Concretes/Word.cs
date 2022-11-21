@@ -1,4 +1,5 @@
 ﻿using DictionaryAPI.Models.Abstracts;
+using System.ComponentModel.DataAnnotations;
 
 namespace DictionaryAPI.Models.Concretes
 {

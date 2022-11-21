@@ -1,6 +1,4 @@
 ﻿using DictionaryAPI.Context;
-using DictionaryAPI.Context.DictionaryRepository;
-using DictionaryAPI.Models.Abstracts;
 using DictionaryAPI.Models.Concretes;
 using DictionaryAPI.Models.ViewModels;
 

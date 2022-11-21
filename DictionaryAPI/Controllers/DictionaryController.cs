@@ -1,13 +1,13 @@
 ﻿using DictionaryAPI.Context;
-using DictionaryAPI.Context.DictionaryRepository;
 using DictionaryAPI.Models.Concretes;
 using DictionaryAPI.Models.ViewModels;
 using DictionaryAPI.Operations.Create;
 using DictionaryAPI.Operations.Delete;
 using DictionaryAPI.Operations.Get;
 using DictionaryAPI.Operations.Update;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using static DictionaryAPI.Models.Validations;
 
 namespace DictionaryAPI.Controllers
 {
@@ -26,9 +26,9 @@ namespace DictionaryAPI.Controllers
         public async Task<IActionResult> GetWordById(long id)
         {
             var command = new GetWordByIdQuery(context);
-            
+
             WordViewModel viewModel = await command.GetWordById(id);
-            
+
             return Ok(viewModel);
         }
 
@@ -46,10 +46,19 @@ namespace DictionaryAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateWord([FromBody] WordViewModel _word)
         {
+            CreateWordValidation createWordValidation= new CreateWordValidation();
+            try
+            {
+                await createWordValidation.Validate(_word);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
             ICreateWordCommand command = new CreateWordCommand(context);
             Word word = command.CreateNewWord(_word);
             await command.SaveNewWord(word);
-            
+
             return CreatedAtAction(
                 actionName: nameof(GetWordById),
                 routeValues: new { id = word.Id },
@@ -61,8 +70,11 @@ namespace DictionaryAPI.Controllers
         public async Task<IActionResult> UpdateWord([FromBody] WordViewModel _word, string wordName)
         {
             IUpdateWordCommand command = new UpdateWordCommand(context);
-            await command.Update(_word, wordName);
-            return Ok("Succesfully Updated");
+            bool IsUpdated = await command.Update(_word, wordName);
+            if (IsUpdated)
+                return Ok(new { message = "Succesfully Updated" });
+            else
+                return BadRequest(new { message = "The word to be updated couldn't be found." });
         }
 
         [HttpDelete("{wordName}")]
@@ -73,10 +85,10 @@ namespace DictionaryAPI.Controllers
             if (IsDeleted)
             {
                 command.SaveChanges();
-                return Ok("Succesfully Deleted");
+                return Ok(new { message = "Succesfully Deleted" });
             }
-            return BadRequest();
-            
+            return BadRequest(new { message = "The word to be deleted couldn't be found." });
+
         }
 
         [HttpDelete("{id:long}")]
@@ -87,13 +99,9 @@ namespace DictionaryAPI.Controllers
             if (IsDeleted)
             {
                 command.SaveChanges();
-                return Ok("Succesfully Deleted");
+                return Ok(new {message = "Succesfully Deleted" });
             }
-            return BadRequest();
+            return BadRequest(new { message = "The word to be deleted couldn't be found." });
         }
-
-
-
-
     }
 }

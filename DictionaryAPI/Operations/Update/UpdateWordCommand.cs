@@ -14,15 +14,18 @@ namespace DictionaryAPI.Operations.Update
             this.context = context;
         }
 
-        public async Task Update(WordViewModel _word, string wordName)
+        public async Task<bool> Update(WordViewModel _word, string wordName)
         {
             wordName = wordName.Trim();
             var word = await context.Words.Include(w => w.Definitions).FirstOrDefaultAsync(w => w.Name == wordName);
             if (word != null)
             {
                 word = _word.ConvertVmToWord(word);
+                await context.SaveChangesAsync();
+                return true;
             }
-            await context.SaveChangesAsync();
+            return false;
+            
         }
     }
 }
