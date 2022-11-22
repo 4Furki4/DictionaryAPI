@@ -16,11 +16,9 @@ namespace DictionaryAPI.Middlewares
         public async Task Invoke(HttpContext context)
         {
             logger.Write("---- New request ----");
-            var requestPath = context.Request.Path;
-            logger.Write(requestPath);
+            logger.Write(message: $"Location: {context.Request.Path}");
             await next(context);
-            string message = $"Response Code: {context.Response.StatusCode}";
-            logger.Write(message);
+            logger.Write(message: $"Response Code: {context.Response.StatusCode}");
         }
     }
 }

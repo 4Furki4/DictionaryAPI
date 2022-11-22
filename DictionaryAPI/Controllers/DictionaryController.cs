@@ -5,9 +5,7 @@ using DictionaryAPI.Operations.Create;
 using DictionaryAPI.Operations.Delete;
 using DictionaryAPI.Operations.Get;
 using DictionaryAPI.Operations.Update;
-using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-using static DictionaryAPI.Models.Validations;
 
 namespace DictionaryAPI.Controllers
 {
@@ -47,14 +45,7 @@ namespace DictionaryAPI.Controllers
         public async Task<IActionResult> CreateWord([FromBody] WordViewModel _word)
         {
             CreateWordValidation createWordValidation= new CreateWordValidation();
-            try
-            {
-                await createWordValidation.Validate(_word);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await createWordValidation.Validate(_word);
             ICreateWordCommand command = new CreateWordCommand(context);
             Word word = command.CreateNewWord(_word);
             await command.SaveNewWord(word);

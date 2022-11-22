@@ -19,9 +19,12 @@ builder.Services.AddDbContext<DictionaryDB>
         ServiceLifetime.Singleton
     );
 builder.Services.AddSingleton<ILoggerService, ConsoleLogger>();
+
+// Configure the HTTP request pipeline.
 var app = builder.Build();
 app.UseHttpInfoMiddleware();
-// Configure the HTTP request pipeline.
+app.UseExceptionMiddleware();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
