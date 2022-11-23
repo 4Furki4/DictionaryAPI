@@ -22,6 +22,7 @@ builder.Services.AddSingleton<ILoggerService, ConsoleLogger>();
 
 // Configure the HTTP request pipeline.
 var app = builder.Build();
+app.UseCors();
 app.UseHttpInfoMiddleware();
 app.UseExceptionMiddleware();
 

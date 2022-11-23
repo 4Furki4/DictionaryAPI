@@ -1,0 +1,13 @@
+GET https://localhost:5000/Dictionary/Words
+Content-Type: application/json
+
+{
+  "name": "string",
+  "definitions": [
+    {
+      "definition": "",
+      "definitionType": "string",
+      "exampleSentence": "string"
+    }
+  ]
+}
