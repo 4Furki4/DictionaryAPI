@@ -1,6 +1,7 @@
 ﻿using DictionaryAPI.Context;
 using DictionaryAPI.DTOs;
 using DictionaryAPI.Models.Concretes;
+using DictionaryAPI.Services.User_Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,11 +19,13 @@ namespace DictionaryAPI.Controllers
     {
         private readonly IConfiguration configuration;
         private readonly DictionaryDB context;
+        private readonly IUserService userService;
 
-        public DictionaryAuthController(IConfiguration configuration, DictionaryDB context)
+        public DictionaryAuthController(IConfiguration configuration, DictionaryDB context, IUserService userService)
         {
             this.configuration = configuration;
             this.context = context;
+            this.userService = userService;
         }
         [HttpPost("/adminregister")]
         [Authorize(Roles = "Admin")]
@@ -41,7 +44,7 @@ namespace DictionaryAPI.Controllers
             return Ok(request);
         }
 
-        [HttpPost("/userregister")]
+        [HttpPost("/register")]
         public async Task<ActionResult<UserDTO>> UserRegister(UserDTO request)
         {
             EncodePassword(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
@@ -68,13 +71,19 @@ namespace DictionaryAPI.Controllers
             string token = CreateToken(user, user.roleId);
             return Ok(token);
         }
+        [HttpGet]
+        [Authorize] 
+        public ActionResult<string> GetName()
+        {
+            return Ok(userService.GetMe());
+        }
 
         private string CreateToken(User user, int roleId)
         {
             List<Claim> claims = new List<Claim>();
             if (roleId == (int)Roles.Admin)
             {
-                claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Name));
+                claims.Add(new Claim(ClaimTypes.Name, user.Name));
                 claims.Add(new Claim(ClaimTypes.Role, "Admin"));
                 //new Claim(ClaimTypes.NameIdentifier, user.Name),
                 //    new Claim(ClaimTypes.Role, "Admin")

@@ -1,6 +1,7 @@
 using DictionaryAPI.Context;
 using DictionaryAPI.Middlewares;
 using DictionaryAPI.Services;
+using DictionaryAPI.Services.User_Service;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -42,12 +43,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateAudience = false
     };
 });
+
 builder.Services.AddDbContext<DictionaryDB>
-    (
-        opt => opt.UseSqlServer(builder.Configuration["ConnectionStrings:DictionaryDB"]), 
-        ServiceLifetime.Singleton
-    );
+(
+    opt => opt.UseSqlServer(builder.Configuration["ConnectionStrings:DictionaryDB"]), 
+    ServiceLifetime.Singleton
+);
 builder.Services.AddSingleton<ILoggerService, ConsoleLogger>();
+builder.Services.AddSingleton<IUserService, UserService>();
+builder.Services.AddHttpContextAccessor();
 
 // Configure the HTTP request pipeline.
 var app = builder.Build();
