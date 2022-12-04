@@ -28,7 +28,7 @@ namespace DictionaryAPI.Controllers
             this.userService = userService;
         }
         [HttpPost("/adminregister")]
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         public async Task<ActionResult<UserDTO>> AddAdmin(UserDTO request)
         {
             EncodePassword(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
@@ -45,7 +45,7 @@ namespace DictionaryAPI.Controllers
         }
 
         [HttpPost("/register")]
-        public async Task<ActionResult<UserDTO>> UserRegister(UserDTO request)
+        public async Task<ActionResult<string>> UserRegister(UserDTO request)
         {
             EncodePassword(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
             User user = new User
@@ -56,18 +56,23 @@ namespace DictionaryAPI.Controllers
                 roleId = 2
             };
             await context.Users.AddAsync(user);
+            string token = CreateToken(user, user.roleId);
+            var refreshToken = GenerateRefreshToken();
+            SetRefreshToken(refreshToken, user);
             await context.SaveChangesAsync();
-            return Ok(request);
+            return Ok(token);
         }
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(UserDTO request)
         {
-            var user = await context.Users.SingleAsync(user => user.Name == request.Username);
+            var user = await context.Users.Include(us => us.RefreshToken).SingleAsync(user => user.Name == request.Username);
             if (user is null)
                 return BadRequest("User not found");
 
             if (!VerifyUser(request.Password, user.PasswordHash, user.PasswordSalt))
                 return BadRequest("Wrong password!");
+            context.RefreshTokens.Remove(user.RefreshToken);
+            await context.SaveChangesAsync();
             string token = CreateToken(user, user.roleId);
             var refreshToken = GenerateRefreshToken();
             SetRefreshToken(refreshToken, user);
@@ -75,11 +80,10 @@ namespace DictionaryAPI.Controllers
             return Ok(token);
         }
         [HttpPost("refresh-token")]
-        [Authorize]
         public async Task<ActionResult<string>> RefreshToken(UserDTO userdto)
         {
             var refreshToken = Request.Cookies["refreshToken"];
-            var user = await context.Users.FirstOrDefaultAsync(user => user.Name == userdto.Username);
+            var user = await context.Users.Include(re => re.RefreshToken).FirstOrDefaultAsync(user => user.Name == userdto.Username);
             if (user is null)
                 return BadRequest("User not found");
             if (!user.RefreshToken.Token.Equals(refreshToken))
@@ -124,7 +128,7 @@ namespace DictionaryAPI.Controllers
 
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.AddHours(1),
+                expires: DateTime.Now.AddSeconds(30),
                 signingCredentials: cred);
 
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
@@ -155,7 +159,7 @@ namespace DictionaryAPI.Controllers
             var refreshToken = new RefreshToken
             {
                 Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
-                Expires = DateTime.Now.AddHours(1),
+                Expires = DateTime.Now.AddMinutes(5),
                 TokenCreated = DateTime.Now
             };
             return refreshToken;
