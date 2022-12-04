@@ -4,6 +4,7 @@ using DictionaryAPI.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DictionaryAPI.Migrations
 {
     [DbContext(typeof(DictionaryDB))]
-    partial class DictionaryDBModelSnapshot : ModelSnapshot
+    [Migration("20221204064230_RefreshToken")]
+    partial class RefreshToken
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -69,13 +72,7 @@ namespace DictionaryAPI.Migrations
                     b.Property<DateTime>("TokenCreated")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
 
                     b.ToTable("RefreshTokens");
                 });
@@ -100,10 +97,15 @@ namespace DictionaryAPI.Migrations
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
 
+                    b.Property<long>("RefreshTokenId")
+                        .HasColumnType("bigint");
+
                     b.Property<int>("roleId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RefreshTokenId");
 
                     b.ToTable("Users");
                 });
@@ -136,21 +138,15 @@ namespace DictionaryAPI.Migrations
                     b.Navigation("Word");
                 });
 
-            modelBuilder.Entity("DictionaryAPI.Models.Concretes.RefreshToken", b =>
+            modelBuilder.Entity("DictionaryAPI.Models.Concretes.User", b =>
                 {
-                    b.HasOne("DictionaryAPI.Models.Concretes.User", "User")
-                        .WithOne("RefreshToken")
-                        .HasForeignKey("DictionaryAPI.Models.Concretes.RefreshToken", "UserId")
+                    b.HasOne("DictionaryAPI.Models.Concretes.RefreshToken", "RefreshToken")
+                        .WithMany()
+                        .HasForeignKey("RefreshTokenId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("DictionaryAPI.Models.Concretes.User", b =>
-                {
-                    b.Navigation("RefreshToken")
-                        .IsRequired();
+                    b.Navigation("RefreshToken");
                 });
 
             modelBuilder.Entity("DictionaryAPI.Models.Concretes.Word", b =>

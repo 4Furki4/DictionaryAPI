@@ -69,8 +69,33 @@ namespace DictionaryAPI.Controllers
             if (!VerifyUser(request.Password, user.PasswordHash, user.PasswordSalt))
                 return BadRequest("Wrong password!");
             string token = CreateToken(user, user.roleId);
+            var refreshToken = GenerateRefreshToken();
+            SetRefreshToken(refreshToken, user);
+            await context.SaveChangesAsync();
             return Ok(token);
         }
+        [HttpPost("refresh-token")]
+        [Authorize]
+        public async Task<ActionResult<string>> RefreshToken(UserDTO userdto)
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
+            var user = await context.Users.FirstOrDefaultAsync(user => user.Name == userdto.Username);
+            if (user is null)
+                return BadRequest("User not found");
+            if (!user.RefreshToken.Token.Equals(refreshToken))
+                return Unauthorized("Invalid refresh token");
+            if (user.RefreshToken.Expires < DateTime.Now)
+                return Unauthorized("Refresh token has expired");
+
+            string token = CreateToken(user, user.roleId);
+
+            var newRefreshToken = GenerateRefreshToken();
+
+            SetRefreshToken(newRefreshToken, user); 
+            await context.SaveChangesAsync();
+            return Ok(token);
+        }
+
         [HttpGet]
         [Authorize] 
         public ActionResult<string> GetName()
@@ -124,6 +149,30 @@ namespace DictionaryAPI.Controllers
 
             }
         }
+
+        RefreshToken GenerateRefreshToken()
+        {
+            var refreshToken = new RefreshToken
+            {
+                Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
+                Expires = DateTime.Now.AddHours(1),
+                TokenCreated = DateTime.Now
+            };
+            return refreshToken;
+        }
+
+        void SetRefreshToken(RefreshToken newRefreshToken, User user)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = newRefreshToken.Expires
+            };
+            Response.Cookies.Append("refreshToken", newRefreshToken.Token, cookieOptions);
+
+            user.RefreshToken = newRefreshToken;
+        }
+
         enum Roles
         {
             Admin = 1,
