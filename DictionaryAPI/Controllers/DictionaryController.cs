@@ -5,12 +5,14 @@ using DictionaryAPI.Operations.Create;
 using DictionaryAPI.Operations.Delete;
 using DictionaryAPI.Operations.Get;
 using DictionaryAPI.Operations.Update;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DictionaryAPI.Controllers
 {
-    [Route("[controller]/Words")]
+    [Route("api/[controller]/Words")]
     [ApiController]
+    [Authorize(Roles = "User, Admin")]
     public class DictionaryController : ControllerBase
     {
         private readonly DictionaryDB context;
@@ -31,6 +33,7 @@ namespace DictionaryAPI.Controllers
         }
 
         [HttpGet("{wordName}")]
+        [AllowAnonymous]
 
         public async Task<IActionResult> GetWordByName(string wordName)
         {

@@ -17,5 +17,10 @@ namespace DictionaryAPI.Middlewares
         {
             return builder.UseMiddleware<ExceptionMiddleware>();
         }
+
+        public static IApplicationBuilder UseAuthMiddleware(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<AuthenticationMiddleware>();
+        }
     }
 }
