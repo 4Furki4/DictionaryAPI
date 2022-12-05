@@ -12,7 +12,7 @@ namespace DictionaryAPI.Controllers
 {
     [Route("api/[controller]/Words")]
     [ApiController]
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = "User, Admin")]
     public class DictionaryController : ControllerBase
     {
         private readonly DictionaryDB context;

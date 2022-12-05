@@ -150,3 +150,9 @@ C:\Users\Furkan Cengiz\source\repos\4Furki4\DictionaryAPI\DictionaryAPI.Tests\bi
 C:\Users\Furkan Cengiz\source\repos\4Furki4\DictionaryAPI\DictionaryAPI.Tests\bin\Debug\net7.0\DictionaryAPI.pdb
 C:\Users\Furkan Cengiz\source\repos\4Furki4\DictionaryAPI\DictionaryAPI.Tests\bin\Debug\net7.0\Castle.Core.dll
 C:\Users\Furkan Cengiz\source\repos\4Furki4\DictionaryAPI\DictionaryAPI.Tests\bin\Debug\net7.0\Moq.dll
+C:\Users\Furkan Cengiz\source\repos\4Furki4\DictionaryAPI\DictionaryAPI.Tests\bin\Debug\net7.0\FluentValidation.dll
+C:\Users\Furkan Cengiz\source\repos\4Furki4\DictionaryAPI\DictionaryAPI.Tests\bin\Debug\net7.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\Furkan Cengiz\source\repos\4Furki4\DictionaryAPI\DictionaryAPI.Tests\bin\Debug\net7.0\Microsoft.Extensions.DependencyModel.dll
+C:\Users\Furkan Cengiz\source\repos\4Furki4\DictionaryAPI\DictionaryAPI.Tests\bin\Debug\net7.0\Scrutor.dll
+C:\Users\Furkan Cengiz\source\repos\4Furki4\DictionaryAPI\DictionaryAPI.Tests\bin\Debug\net7.0\Swashbuckle.AspNetCore.Filters.dll
+C:\Users\Furkan Cengiz\source\repos\4Furki4\DictionaryAPI\DictionaryAPI.Tests\bin\Debug\net7.0\Swashbuckle.AspNetCore.Filters.Abstractions.dll

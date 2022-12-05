@@ -28,7 +28,7 @@ namespace DictionaryAPI.Controllers
             this.userService = userService;
         }
         [HttpPost("/adminregister")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<UserDTO>> AddAdmin(UserDTO request)
         {
             EncodePassword(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
@@ -40,8 +40,11 @@ namespace DictionaryAPI.Controllers
                 roleId = 1
             };
             await context.Users.AddAsync(user);
+            string token = CreateToken(user, user.roleId);
+            var refreshToken = GenerateRefreshToken();
+            SetRefreshToken(refreshToken, user);
             await context.SaveChangesAsync();
-            return Ok(request);
+            return Ok(token);
         }
 
         [HttpPost("/register")]
@@ -128,7 +131,7 @@ namespace DictionaryAPI.Controllers
 
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.AddSeconds(30),
+                expires: DateTime.Now.AddDays(3),
                 signingCredentials: cred);
 
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
@@ -159,7 +162,7 @@ namespace DictionaryAPI.Controllers
             var refreshToken = new RefreshToken
             {
                 Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
-                Expires = DateTime.Now.AddMinutes(5),
+                Expires = DateTime.Now.AddDays(7),
                 TokenCreated = DateTime.Now
             };
             return refreshToken;

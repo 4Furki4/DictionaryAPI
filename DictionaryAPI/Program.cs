@@ -70,6 +70,7 @@ app.UseHttpsRedirection();
  
 app.UseRouting();
 app.UseCors(opt => opt.WithOrigins("http://192.168.1.111:5500", "http://localhost:5000"));
+app.UseCors(opt => opt.AllowAnyOrigin());
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
